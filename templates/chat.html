@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat AI - DocMind</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body class="chat-layout">
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand" href="/">DocMind AI</a>
+    <div class="ms-auto d-flex align-items-center gap-3">
+      <a href="/" class="nav-link"><i class="bi bi-house-door"></i> Trang chủ</a>
+      <a href="/dashboard" class="nav-link"><i class="bi bi-bar-chart-line"></i> Dashboard</a>
+      <!-- <span id="ollamaStatusBadge" class="badge bg-secondary">⏳ ...</span> -->
+    </div>
+  </div>
+</nav>
+
+<!-- Chat Layout: Sidebar + Main -->
+<div class="chat-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="chat-sidebar">
+    <div class="sidebar-header">
+      <h6><i class="bi bi-files"></i> Tài Liệu</h6>
+      <button class="btn-icon" title="Tải lên file mới" onclick="document.getElementById('sidebarFile').click()">
+        <i class="bi bi-plus-lg"></i>
+      </button>
+      <input type="file" id="sidebarFile" accept=".pdf,.docx,.txt" style="display:none" multiple>
+    </div>
+
+    <!-- Upload mini progress -->
+    <div id="sidebarUploadProgress" style="display:none" class="sidebar-upload-progress">
+      <div class="progress" style="height:3px">
+        <div class="progress-bar progress-bar-animated" style="width:100%"></div>
+      </div>
+      <small id="sidebarUploadMsg">Đang xử lý...</small>
+    </div>
+
+    <div class="sidebar-docs" id="sidebarDocs">
+      <div class="sidebar-empty">
+        <i class="bi bi-cloud-upload"></i>
+        <span>Tải lên tài liệu để bắt đầu</span>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="btn-sidebar-action" onclick="selectAllDocs()">
+        <i class="bi bi-check2-all"></i> Chọn tất cả
+      </button>
+      <button class="btn-sidebar-action" onclick="deselectAllDocs()">
+        <i class="bi bi-x-circle"></i> Bỏ chọn
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Chat -->
+  <main class="chat-main">
+
+    <!-- Chat header -->
+    <div class="chat-header">
+      <div>
+        <h5 id="chatTitle">💬 Trò chuyện với AI</h5>
+        <small id="chatSubtitle" class="text-muted">Chọn tài liệu bên trái rồi đặt câu hỏi</small>
+      </div>
+      <div class="chat-header-actions">
+        <button class="btn-icon" onclick="exportChat()" title="Xuất lịch sử">
+          <i class="bi bi-download"></i>
+        </button>
+        <button class="btn-icon btn-icon-danger" onclick="clearChat()" title="Xóa lịch sử">
+          <i class="bi bi-trash3"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="chat-messages" id="chatMessages">
+      <div class="welcome-msg">
+        <h4>Xin chào! Tôi là DocMind AI</h4>
+        <p>Hãy tải lên tài liệu và đặt câu hỏi. Tôi sẽ đọc và phân tích giúp bạn.</p>
+        <div class="welcome-hints">
+          <div class="hint-chip" onclick="fillHint(this)">Tóm tắt nội dung chính của tài liệu</div>
+          <div class="hint-chip" onclick="fillHint(this)">Liệt kê các điểm quan trọng nhất</div>
+          <div class="hint-chip" onclick="fillHint(this)">Tài liệu này nói về chủ đề gì?</div>
+          <div class="hint-chip" onclick="fillHint(this)">So sánh các nội dung trong tài liệu</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input area -->
+    <div class="chat-input-area">
+      <div class="selected-docs-bar" id="selectedDocsBar" style="display:none">
+        <i class="bi bi-paperclip"></i>
+        <span id="selectedDocsText">0 tài liệu được chọn</span>
+      </div>
+      <div class="input-row">
+        <textarea id="chatInput" class="chat-textarea" placeholder="Đặt câu hỏi về tài liệu của bạn..." rows="1"
+          onkeydown="handleKeyDown(event)" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+          <i class="bi bi-send-fill"></i>
+        </button>
+      </div>
+      <div class="input-footer">
+        <span><i class="bi bi-info-circle"></i> Enter gửi · Shift+Enter xuống dòng</span>
+        <span id="modelInfo">Model: qwen2.5:7b</span>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>
