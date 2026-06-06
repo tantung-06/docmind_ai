@@ -18,69 +18,50 @@
     <div class="ms-auto d-flex align-items-center gap-3">
       <a href="/" class="nav-link"><i class="bi bi-house-door"></i> Trang chủ</a>
       <a href="/dashboard" class="nav-link"><i class="bi bi-bar-chart-line"></i> Dashboard</a>
-      <!-- <span id="ollamaStatusBadge" class="badge bg-secondary">⏳ ...</span> -->
     </div>
   </div>
 </nav>
 
-<!-- Chat Layout: Sidebar + Main -->
-<div class="chat-wrapper">
+<!-- Chat Layout: LEFT sidebar + Main + RIGHT doc sidebar -->
+<div class="chat-wrapper" style="display:flex;height:calc(100vh - 57px);overflow:hidden">
 
-  <!-- Sidebar -->
-  <aside class="chat-sidebar">
-    <div class="sidebar-header">
-      <h6><i class="bi bi-files"></i> Tài Liệu</h6>
-      <button class="btn-icon" title="Tải lên file mới" onclick="document.getElementById('sidebarFile').click()">
+  <!-- ── LEFT: History Sidebar ── -->
+  <aside class="history-sidebar" id="historySidebar">
+    <div class="hsb-header">
+      <span><i class="bi bi-clock-history"></i> Lịch sử</span>
+      <button class="btn-icon" id="newChatBtn" title="Cuộc trò chuyện mới">
         <i class="bi bi-plus-lg"></i>
       </button>
-      <input type="file" id="sidebarFile" accept=".pdf,.docx,.txt" style="display:none" multiple>
     </div>
 
-    <!-- Upload mini progress -->
-    <div id="sidebarUploadProgress" style="display:none" class="sidebar-upload-progress">
-      <div class="progress" style="height:3px">
-        <div class="progress-bar progress-bar-animated" style="width:100%"></div>
-      </div>
-      <small id="sidebarUploadMsg">Đang xử lý...</small>
+    <!-- Guest notice -->
+    <div class="hsb-guest-notice" id="hsbGuestNotice">
+      <i class="bi bi-lock"></i>
+      <span>Đăng nhập để lưu lịch sử</span>
+      <button onclick="AUTH.openModal()">Đăng nhập</button>
     </div>
 
-    <div class="sidebar-docs" id="sidebarDocs">
-      <div class="sidebar-empty">
-        <i class="bi bi-cloud-upload"></i>
-        <span>Tải lên tài liệu để bắt đầu</span>
-      </div>
-    </div>
-
-    <div class="sidebar-footer">
-      <button class="btn-sidebar-action" onclick="selectAllDocs()">
-        <i class="bi bi-check2-all"></i> Chọn tất cả
-      </button>
-      <button class="btn-sidebar-action" onclick="deselectAllDocs()">
-        <i class="bi bi-x-circle"></i> Bỏ chọn
-      </button>
-    </div>
+    <!-- Conversation list -->
+    <div class="hsb-list" id="hsbList"></div>
   </aside>
 
-  <!-- Main Chat -->
-  <main class="chat-main">
+  <!-- ── MAIN Chat ── -->
+  <main class="chat-main" style="flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden">
 
-    <!-- Chat header -->
     <div class="chat-header">
-      <div>
-        <h5 id="chatTitle">💬 Trò chuyện với AI</h5>
-        <small id="chatSubtitle" class="text-muted">Chọn tài liệu bên trái rồi đặt câu hỏi</small>
+      <div style="display:flex;align-items:center;gap:.6rem;min-width:0">
+        <span id="currentConvTitle" style="font-weight:700;font-size:.95rem;font-family:var(--font-display);
+              white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px">💬 Trò chuyện với AI</span>
+        <button class="btn-icon" id="renameBtn" title="Đổi tên" style="display:none;width:26px;height:26px;font-size:.8rem">
+          <i class="bi bi-pencil"></i>
+        </button>
       </div>
       <div class="chat-header-actions">
-        <button class="btn-icon" onclick="exportChat()" title="Xuất lịch sử">
-          <i class="bi bi-download"></i>
-        </button>
-        <button class="btn-icon btn-icon-danger" onclick="clearChat()" title="Xóa lịch sử">
-          <i class="bi bi-trash3"></i>
-        </button>
+        <button class="btn-icon" onclick="exportChat()" title="Xuất"><i class="bi bi-download"></i></button>
+        <button class="btn-icon btn-icon-danger" onclick="clearCurrentChat()" title="Xóa phiên"><i class="bi bi-trash3"></i></button>
       </div>
     </div>
 
-    <!-- Messages -->
     <div class="chat-messages" id="chatMessages">
       <div class="welcome-msg">
         <h4>Xin chào! Tôi là DocMind AI</h4>
@@ -94,7 +75,6 @@
       </div>
     </div>
 
-    <!-- Input area -->
     <div class="chat-input-area">
       <div class="selected-docs-bar" id="selectedDocsBar" style="display:none">
         <i class="bi bi-paperclip"></i>
@@ -113,9 +93,54 @@
       </div>
     </div>
   </main>
+
+  <!-- ── RIGHT: Document Sidebar ── -->
+  <aside class="chat-sidebar">
+    <div class="sidebar-header">
+      <h6><i class="bi bi-files"></i> Tài Liệu</h6>
+      <button class="btn-icon" title="Tải lên file mới" onclick="document.getElementById('sidebarFile').click()">
+        <i class="bi bi-plus-lg"></i>
+      </button>
+      <input type="file" id="sidebarFile" accept=".pdf,.docx,.txt" style="display:none" multiple>
+    </div>
+    <div id="sidebarUploadProgress" style="display:none" class="sidebar-upload-progress">
+      <div class="progress" style="height:3px">
+        <div class="progress-bar progress-bar-animated" style="width:100%"></div>
+      </div>
+      <small id="sidebarUploadMsg">Đang xử lý...</small>
+    </div>
+    <div class="sidebar-docs" id="sidebarDocs">
+      <div class="sidebar-empty">
+        <i class="bi bi-cloud-upload"></i>
+        <span>Tải lên tài liệu để bắt đầu</span>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar-action" onclick="selectAllDocs()"><i class="bi bi-check2-all"></i> Chọn tất cả</button>
+      <button class="btn-sidebar-action" onclick="deselectAllDocs()"><i class="bi bi-x-circle"></i> Bỏ chọn</button>
+    </div>
+  </aside>
+
+</div>
+
+<!-- Rename modal -->
+<div class="auth-overlay" id="renameOverlay" style="z-index:8000">
+  <div class="auth-modal" style="max-width:360px">
+    <div class="auth-modal-header" style="padding:1.25rem 1.5rem">
+      <div class="auth-modal-logo" style="font-size:1rem">Đổi tên cuộc trò chuyện</div>
+    </div>
+    <div class="auth-form-area" style="padding:1.25rem 1.5rem">
+      <input class="auth-input" id="renameInput" type="text" placeholder="Tên mới..." maxlength="60">
+      <div style="display:flex;gap:.5rem;margin-top:1rem">
+        <button class="auth-submit-btn" style="flex:1" onclick="submitRename()">Lưu</button>
+        <button class="auth-guest-btn" style="flex:1" onclick="closeRenameModal()">Huỷ</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
 <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 </body>
 </html>

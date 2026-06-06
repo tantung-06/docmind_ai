@@ -1,23 +1,9 @@
-/* ── dashboard.js ─────────────────────── */
-
 let allDocs = [];
 
 async function checkOllama() {
   try {
     const r = await fetch("/api/health");
     const data = await r.json();
-    // const badge = document.getElementById("ollamaStatusBadge");
-    // if (badge) {
-    //   if (data.ollama.ok && data.ollama.model_ready) {
-    //     badge.textContent = "● Online";
-    //     badge.style.cssText = "background:rgba(74,222,128,.2);color:#4ade80;border:1px solid rgba(74,222,128,.4);padding:.25rem .6rem;border-radius:12px;font-size:.75rem;";
-    //   } else {
-    //     badge.textContent = "✕ Offline";
-    //     badge.style.cssText = "background:rgba(248,113,113,.2);color:#f87171;border:1px solid rgba(248,113,113,.4);padding:.25rem .6rem;border-radius:12px;font-size:.75rem;";
-    //   }
-    // }
-
-    // Fill model info table
     document.getElementById("infModel").textContent  = data.ollama.target_model ?? "—";
     document.getElementById("infUrl").textContent    = "http://localhost:11434";
     document.getElementById("infStatus").innerHTML   = data.ollama.model_ready

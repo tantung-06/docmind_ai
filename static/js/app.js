@@ -1,29 +1,5 @@
 const SESSION_ID = "default";
 
-// ── Ollama status check ──────────────────
-
-// async function checkOllama() {
-//   try {
-//     const r = await fetch("/api/health");
-//     const data = await r.json();
-//     const badge = document.getElementById("ollamaStatusBadge");
-//     if (!badge) return;
-//     if (data.ollama.ok && data.ollama.model_ready) {
-//       badge.textContent = "● Ollama Online";
-//       badge.className = "ms-3 badge";
-//       badge.style.cssText = "background:rgba(74,222,128,.2);color:#4ade80;border:1px solid rgba(74,222,128,.4);";
-//     } else if (data.ollama.ok) {
-//       badge.textContent = "⚠ Model chưa tải";
-//       badge.className = "ms-3 badge";
-//       badge.style.cssText = "background:rgba(251,191,36,.2);color:#fbbf24;border:1px solid rgba(251,191,36,.4);";
-//     } else {
-//       badge.textContent = "✕ Ollama Offline";
-//       badge.className = "ms-3 badge";
-//       badge.style.cssText = "background:rgba(248,113,113,.2);color:#f87171;border:1px solid rgba(248,113,113,.4);";
-//     }
-//   } catch {}
-// }
-
 // ── Load documents ───────────────────────
 
 async function loadDocuments() {
@@ -147,8 +123,6 @@ function initDropzone() {
 
 // ── Init ─────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
-  // checkOllama();
   loadDocuments();
   initDropzone();
-  // setInterval(checkOllama, 30000);
 });
