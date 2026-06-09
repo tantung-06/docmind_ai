@@ -134,5 +134,5 @@ docmind_ai/
 
 - **Lưu trữ in-memory** — dữ liệu mất khi restart. Để persistence, tích hợp SQLite.
 - **RAG dùng keyword matching** — để chính xác hơn, thay bằng ChromaDB + embeddings.
-- **Chunk size** mặc định: 800 ký tự, overlap 100 ký tự.
+- **Chunk size** mặc định: 1000 ký tự, overlap 100 ký tự.
 - **Mật khẩu** được hash SHA-256 trước khi lưu.
