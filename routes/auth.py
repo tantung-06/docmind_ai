@@ -7,12 +7,12 @@ import hashlib
 from datetime import datetime
 
 from flask import Blueprint, request, jsonify, session
-from store import users_store
+from store import users_store, save_users
 
 auth_bp = Blueprint("auth", __name__)
 
 
-# ── Helpers ───────────────────────────────────────────────────────────────────
+# Helpers
 
 def hash_password(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
@@ -29,7 +29,7 @@ def current_user() -> dict | None:
     return None
 
 
-# ── Routes ────────────────────────────────────────────────────────────────────
+# Routes
 
 @auth_bp.route("/api/register", methods=["POST"])
 def register():
@@ -59,6 +59,8 @@ def register():
     session.clear()
     session["user_id"] = uid
     session.permanent  = True
+
+    save_users()   # lưu xuống file
 
     return jsonify({
         "message": "Đăng ký thành công!",
