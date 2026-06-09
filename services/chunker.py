@@ -4,7 +4,7 @@ Thay retrieve_chunks bằng ChromaDB + embeddings để chính xác hơn.
 """
 
 
-def chunk_text(text: str, chunk_size: int = 800, overlap: int = 100) -> list[str]:
+def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 100) -> list[str]:
     """
     Chia văn bản thành các đoạn nhỏ theo từ (sliding window).
 
