@@ -15,7 +15,7 @@ MAX_CONTENT_LENGTH = 50 * 1024 * 1024          # 50 MB
 
 # ── Ollama ────────────────────────────────────────────────────────────────────
 OLLAMA_BASE_URL = os.getenv("OLLAMA_HOST",  "http://localhost:11434")
-OLLAMA_MODEL    = os.getenv("OLLAMA_MODEL", "qwen2.5:7b")
+OLLAMA_MODEL    = os.getenv("OLLAMA_MODEL", "qwen2.5:3b")
 
 # ── Flask ─────────────────────────────────────────────────────────────────────
 SECRET_KEY = os.getenv("SECRET_KEY", secrets.token_hex(32))
