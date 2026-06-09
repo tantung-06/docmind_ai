@@ -9,6 +9,7 @@ from datetime import datetime
 from flask import Blueprint, request, jsonify, Response, stream_with_context
 
 from routes.auth import current_user
+from routes.documents import ensure_chunks, get_owner_id
 from store import documents_store, user_convs, save_convs
 from services.chunker import retrieve_chunks
 from services import ollama
@@ -113,7 +114,7 @@ def delete_conversation(conv_id: str):
     return jsonify({"message": "Đã xóa"})
 
 
-# Chat streaming
+# Chat streaming 
 
 @chat_bp.route("/api/chat", methods=["POST"])
 def chat():
@@ -150,12 +151,16 @@ def chat():
     else:
         history = []
 
-    # Xây dựng RAG context từ các tài liệu được chọn
+    # Xây dựng RAG context từ các tài liệu được chọn (chỉ dùng doc của owner)
+    owner_id      = get_owner_id()
     context_parts = []
     for did in doc_ids:
         doc = documents_store.get(did)
         if not doc:
             continue
+        if doc.get("owner_id") != owner_id:
+            continue                          # không dùng doc của người khác
+        ensure_chunks(doc)
         relevant = retrieve_chunks(user_msg, doc["chunks"], top_k=4)
         if relevant:
             context_parts.append(
@@ -189,7 +194,7 @@ def chat():
             c["messages"].append({"role": "user",      "content": user_msg,      "timestamp": now})
             c["messages"].append({"role": "assistant", "content": full_response, "timestamp": now})
             c["updated_at"] = now
-            save_convs()
+            save_convs()   # lưu xuống file
 
         yield f"data: {json.dumps({'done': True, 'saved': is_logged_in, 'conv_id': conv_id})}\n\n"
 
