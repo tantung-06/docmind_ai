@@ -85,11 +85,16 @@ docmind_ai/
 │   ├── chat.html             # Trang chat
 │   └── dashboard.html        # Trang thống kê
 │
+├── data/                     # Dữ liệu người dùng (tự tạo, không push Git)
+│   ├── users.json            # Tài khoản đăng ký
+│   └── conversations.json    # Lịch sử hội thoại
+│
 ├── uploads/                  # File tải lên (tự tạo)
 │
 ├── app.py                    # Entry point — khởi động Flask
 ├── config.py                 # Biến cấu hình
-├── store.py                  # Bộ nhớ trong (user, tài liệu, lịch sử)
+├── store.py                  # Đọc/ghi dữ liệu (user, tài liệu, lịch sử)
+├── .gitignore                # Bỏ qua __pycache__, data/, uploads/
 ├── README.md
 └── requirements.txt
 ```
