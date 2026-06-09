@@ -85,9 +85,10 @@ docmind_ai/
 │   ├── chat.html             # Trang chat
 │   └── dashboard.html        # Trang thống kê
 │
-├── data/                     # Dữ liệu người dùng (tự tạo, không push Git)
+├── data/                     # Dữ liệu người dùng (tự tạo)
 │   ├── users.json            # Tài khoản đăng ký
-│   └── conversations.json    # Lịch sử hội thoại
+│   ├── conversations.json    # Lịch sử hội thoại
+│   └── documents.json        # Metadata tài liệu đã tải lên
 │
 ├── uploads/                  # File tải lên (tự tạo)
 │
