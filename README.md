@@ -1,6 +1,6 @@
 # DocMind AI — Chatbot Hỏi Đáp Tài Liệu
 
-Hỏi đáp thông minh từ PDF, DOCX, TXT — chạy hoàn toàn cục bộ qua **Ollama + Qwen2.5:7b**
+Hỏi đáp thông minh từ PDF, DOCX, TXT — chạy hoàn toàn cục bộ qua **Ollama + Qwen2.5:3b**
 
 ## Tính năng
 
@@ -22,9 +22,9 @@ Hỏi đáp thông minh từ PDF, DOCX, TXT — chạy hoàn toàn cục bộ qu
 
 https://ollama.com
 
-### Kéo model Qwen2.5:7b (khoảng 4.7GB)
+### Kéo model Qwen2.5:3b (khoảng 4.7GB)
 
-ollama pull qwen2.5:7b
+ollama pull qwen2.5:3b
 
 ### Khởi động Ollama server (nếu chưa chạy)
 
@@ -48,7 +48,7 @@ Mở trình duyệt tại: **http://localhost:5000**
 | Biến           | Mặc định                 | Mô tả                     |
 | -------------- | ------------------------ | ------------------------- |
 | `OLLAMA_HOST`  | `http://localhost:11434` | URL Ollama server         |
-| `OLLAMA_MODEL` | `qwen2.5:7b`             | Model sử dụng             |
+| `OLLAMA_MODEL` | `qwen2.5:3b`             | Model sử dụng             |
 | `SECRET_KEY`   | Tự sinh ngẫu nhiên       | Khóa mã hóa Flask session |
 
 ### Ví dụ dùng model khác
