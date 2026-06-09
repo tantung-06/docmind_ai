@@ -9,14 +9,14 @@ from datetime import datetime
 from flask import Blueprint, request, jsonify, Response, stream_with_context
 
 from routes.auth import current_user
-from store import documents_store, user_convs
+from store import documents_store, user_convs, save_convs
 from services.chunker import retrieve_chunks
 from services import ollama
 
 chat_bp = Blueprint("chat", __name__)
 
 
-# ── Helper ────────────────────────────────────────────────────────────────────
+# Helper
 
 def make_title(text: str, max_len: int = 40) -> str:
     """Tự động đặt tiêu đề phiên từ tin nhắn đầu tiên."""
@@ -24,7 +24,7 @@ def make_title(text: str, max_len: int = 40) -> str:
     return t[:max_len] + ("…" if len(t) > max_len else "")
 
 
-# ── Conversations (phiên chat) ────────────────────────────────────────────────
+# Conversations (phiên chat)
 
 @chat_bp.route("/api/conversations", methods=["GET"])
 def list_conversations():
@@ -64,6 +64,8 @@ def create_conversation():
             "created_at": now, "updated_at": now}
     user_convs.setdefault(user["id"], {})[conv_id] = conv
 
+    save_convs()   # lưu xuống file
+
     return jsonify({"conversation": {
         "id": conv_id, "title": title,
         "msg_count": 0, "created_at": now, "updated_at": now,
@@ -96,6 +98,7 @@ def rename_conversation(conv_id: str):
     new_title = (data.get("title") or "").strip()
     if new_title:
         conv["title"] = new_title
+        save_convs()
     return jsonify({"ok": True})
 
 
@@ -106,10 +109,11 @@ def delete_conversation(conv_id: str):
         return jsonify({"error": "Chưa đăng nhập"}), 401
 
     user_convs.get(user["id"], {}).pop(conv_id, None)
+    save_convs()
     return jsonify({"message": "Đã xóa"})
 
 
-# ── Chat streaming ────────────────────────────────────────────────────────────
+# Chat streaming
 
 @chat_bp.route("/api/chat", methods=["POST"])
 def chat():
@@ -185,6 +189,7 @@ def chat():
             c["messages"].append({"role": "user",      "content": user_msg,      "timestamp": now})
             c["messages"].append({"role": "assistant", "content": full_response, "timestamp": now})
             c["updated_at"] = now
+            save_convs()
 
         yield f"data: {json.dumps({'done': True, 'saved': is_logged_in, 'conv_id': conv_id})}\n\n"
 
