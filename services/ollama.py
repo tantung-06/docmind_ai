@@ -37,9 +37,9 @@ def chat_stream(messages: list[dict]):
                 if data.get("done"):
                     break
     except requests.exceptions.ConnectionError:
-        yield f"\n\n⚠️ Không thể kết nối Ollama tại {OLLAMA_BASE_URL}"
+        yield f"\n\nKhông thể kết nối Ollama tại {OLLAMA_BASE_URL}"
     except Exception as exc:
-        yield f"\n\n⚠️ Lỗi: {exc}"
+        yield f"\n\nLỗi: {exc}"
 
 
 def health() -> dict:
