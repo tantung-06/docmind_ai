@@ -65,7 +65,7 @@ def create_conversation():
             "created_at": now, "updated_at": now}
     user_convs.setdefault(user["id"], {})[conv_id] = conv
 
-    save_convs()   # lưu xuống file
+    save_convs()
 
     return jsonify({"conversation": {
         "id": conv_id, "title": title,
@@ -114,14 +114,14 @@ def delete_conversation(conv_id: str):
     return jsonify({"message": "Đã xóa"})
 
 
-# Chat streaming 
+# Chat streaming
 
 @chat_bp.route("/api/chat", methods=["POST"])
 def chat():
     data     = request.get_json(force=True)
     user_msg = data.get("message", "").strip()
     doc_ids  = data.get("doc_ids", [])
-    conv_id  = data.get("conv_id")       # None = chưa có phiên
+    conv_id  = data.get("conv_id")
 
     if not user_msg:
         return jsonify({"error": "Tin nhắn rỗng"}), 400
@@ -142,16 +142,16 @@ def chat():
             "updated_at": now,
         }
 
-    # Lấy lịch sử 10 lượt gần nhất
+    # Lấy lịch sử 6 lượt gần nhất
     if is_logged_in and conv_id:
         conv = user_convs.get(uid, {}).get(conv_id)
         if not conv:
             return jsonify({"error": "Phiên không tồn tại"}), 404
-        history = conv["messages"][-10:]
+        history = conv["messages"][-6:]
     else:
         history = []
 
-    # Xây dựng RAG context từ các tài liệu được chọn (chỉ dùng doc của owner)
+    # Xây dựng RAG context (chỉ dùng doc của owner hiện tại)
     owner_id      = get_owner_id()
     context_parts = []
     for did in doc_ids:
@@ -159,7 +159,7 @@ def chat():
         if not doc:
             continue
         if doc.get("owner_id") != owner_id:
-            continue                          # không dùng doc của người khác
+            continue
         ensure_chunks(doc)
         relevant = retrieve_chunks(user_msg, doc["chunks"], top_k=4)
         if relevant:
@@ -167,15 +167,32 @@ def chat():
                 f"[Tài liệu: {doc['name']}]\n" + "\n---\n".join(relevant)
             )
 
-    system_prompt = (
-        "Bạn là trợ lý AI thông minh chuyên phân tích tài liệu. "
-        "Trả lời bằng tiếng Việt, chính xác và có cấu trúc rõ ràng. "
-        "Dựa vào nội dung tài liệu được cung cấp để trả lời. "
-        "Nếu thông tin không có trong tài liệu, hãy nói rõ điều đó."
-    )
+    # System prompt
     if context_parts:
-        system_prompt += "\n\nNỘI DUNG TÀI LIỆU THAM KHẢO:\n" + "\n\n".join(context_parts)
+        context_text = "\n\n".join(context_parts)
+        system_prompt = f"""Bạn là trợ lý AI trả lời câu hỏi dựa trên CONTEXT được cung cấp.
 
+QUY TẮC:
+
+Chỉ sử dụng thông tin có trong CONTEXT.
+Không suy đoán, không bổ sung kiến thức bên ngoài.
+Nếu CONTEXT không chứa câu trả lời, trả lời đúng:
+  "Tôi không tìm thấy thông tin này trong tài liệu."
+Trả lời bằng ngôn ngữ của người dùng.
+Trả lời ngắn gọn, trực tiếp.
+Câu hỏi liệt kê → dùng bullet points.
+Không nhắc tới CONTEXT, tài liệu hay nguồn dữ liệu.
+Không giải thích quy trình suy luận.
+
+CONTEXT:
+{context_text}"""
+    else:
+        system_prompt = """Bạn là trợ lý AI chuyên hỏi đáp tài liệu.
+
+Người dùng chưa chọn tài liệu nào. Hãy nhắc họ chọn tài liệu ở sidebar bên phải để bắt đầu.
+Nếu câu hỏi mang tính chung chung (không cần tài liệu), vẫn trả lời bình thường."""
+
+    # Gửi đến Ollama
     messages = [{"role": "system", "content": system_prompt}]
     messages += [{"role": m["role"], "content": m["content"]} for m in history]
     messages.append({"role": "user", "content": user_msg})
@@ -187,14 +204,14 @@ def chat():
             full_response += token
             yield f"data: {json.dumps({'token': token})}\n\n"
 
-        # Lưu tin nhắn vào lịch sử (chỉ khi đã đăng nhập)
+        # Lưu vào lịch sử (chỉ khi đã đăng nhập)
         now = datetime.now().isoformat()
         if is_logged_in and conv_id and uid in user_convs and conv_id in user_convs[uid]:
             c = user_convs[uid][conv_id]
             c["messages"].append({"role": "user",      "content": user_msg,      "timestamp": now})
             c["messages"].append({"role": "assistant", "content": full_response, "timestamp": now})
             c["updated_at"] = now
-            save_convs()   # lưu xuống file
+            save_convs()
 
         yield f"data: {json.dumps({'done': True, 'saved': is_logged_in, 'conv_id': conv_id})}\n\n"
 

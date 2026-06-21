@@ -22,7 +22,12 @@ def chat_stream(messages: list[dict]):
         "model":   OLLAMA_MODEL,
         "messages": messages,
         "stream":  True,
-        "options": {"temperature": 0.3, "num_ctx": 4096},
+        "keep_alive": "10m",
+        "options": {
+            "temperature": 0.1,
+            "num_ctx": 2048,
+            "num_predict": 256
+            },
     }
     try:
         with requests.post(url, json=payload, stream=True, timeout=120) as resp:
