@@ -3,7 +3,7 @@ let isStreaming    = false;
 let currentConvId  = null;   // active conversation id (null = guest / new)
 let allConversations = [];   // cached list from server
 
-// ── Conversation history sidebar ─────────────────────────────────────────────
+// Conversation history sidebar 
 
 async function loadConversations() {
   const user = window.AUTH?.getUser?.();
@@ -72,7 +72,7 @@ function escapeHtml(s) {
                   .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 }
 
-// ── Switch conversation ───────────────────────────────────────────────────────
+// Switch conversation 
 
 async function switchConversation(convId) {
   if (isStreaming) return;
@@ -131,7 +131,7 @@ function buildMessageDiv(role, text, timestamp) {
   return div;
 }
 
-// ── New conversation ──────────────────────────────────────────────────────────
+// New conversation 
 
 async function newConversation() {
   const user = window.AUTH?.getUser?.();
@@ -147,7 +147,7 @@ async function newConversation() {
   document.getElementById("chatInput")?.focus();
 }
 
-// ── Delete conversation ───────────────────────────────────────────────────────
+// Delete conversation 
 
 async function deleteConversation(convId, e) {
   e.stopPropagation();
@@ -165,7 +165,7 @@ async function deleteConversation(convId, e) {
   await loadConversations();
 }
 
-// ── Rename ────────────────────────────────────────────────────────────────────
+// Rename 
 
 let _renamingId = null;
 
@@ -199,7 +199,7 @@ document.addEventListener("keydown", e => {
     submitRename();
 });
 
-// ── UI helpers ────────────────────────────────────────────────────────────────
+// UI helpers
 
 function updateChatTitle(title) {
   const el = document.getElementById("currentConvTitle");
@@ -221,7 +221,7 @@ function getWelcomeHTML() {
   </div>`;
 }
 
-// ── Document sidebar ──────────────────────────────────────────────────────────
+// Document sidebar 
 
 async function loadSidebarDocs() {
   try {
@@ -296,7 +296,7 @@ function initSidebarUpload() {
   });
 }
 
-// ── Message rendering ─────────────────────────────────────────────────────────
+// Message rendering 
 
 function nowStr() {
   return new Date().toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"});
@@ -333,7 +333,7 @@ function escapeAndFormat(text) {
     .replace(/\n/g,"<br>");
 }
 
-// ── Send message ──────────────────────────────────────────────────────────────
+// Send message 
 
 async function sendMessage() {
   if (isStreaming) return;
@@ -424,7 +424,7 @@ async function sendMessage() {
   }
 }
 
-// ── Clear current chat ────────────────────────────────────────────────────────
+// Clear current chat 
 
 async function clearCurrentChat() {
   if (!currentConvId) {
@@ -437,13 +437,13 @@ async function clearCurrentChat() {
   await deleteConversation(currentConvId, { stopPropagation: ()=>{} });
 }
 
-// ── Export ────────────────────────────────────────────────────────────────────
+// Export 
 
 function exportChat() {
   const msgs    = document.getElementById("chatMessages");
   const bubbles = msgs?.querySelectorAll(".message");
   if (!bubbles?.length) { alert("Chưa có tin nhắn"); return; }
-  let text = `DocMind AI — Lịch sử\n${"=".repeat(50)}\n`;
+  let text = `DocMind AI - Lịch sử\n${"=".repeat(50)}\n`;
   bubbles.forEach(m => {
     const role   = m.classList.contains("user") ? "Bạn" : "AI";
     const bubble = m.querySelector(".message-bubble");
@@ -456,7 +456,7 @@ function exportChat() {
   a.click();
 }
 
-// ── Keyboard helpers ──────────────────────────────────────────────────────────
+// Keyboard helpers 
 
 function handleKeyDown(e) {
   if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
@@ -473,7 +473,7 @@ function fillHint(el) {
     autoResize(input); }
 }
 
-// ── Rename btn wiring ─────────────────────────────────────────────────────────
+// Rename btn wiring 
 
 function wireRenameBtn() {
   const btn = document.getElementById("renameBtn");
@@ -485,7 +485,7 @@ function wireRenameBtn() {
   });
 }
 
-// ── Auth state listener ───────────────────────────────────────────────────────
+// Auth state listener 
 
 document.addEventListener("authStateChanged", async (e) => {
   if (e.detail) {
@@ -507,7 +507,7 @@ document.addEventListener("authStateChanged", async (e) => {
   }
 });
 
-// ── Init ──────────────────────────────────────────────────────────────────────
+// Init 
 
 document.addEventListener("DOMContentLoaded", () => {
   loadSidebarDocs();
@@ -524,9 +524,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(loadSidebarDocs, 10000);
   document.getElementById("chatInput")?.focus();
 
-  // Load after auth.js has fired /api/me
-  // auth.js dispatches authStateChanged → we handle above
-  // Also do an initial load in case user is already logged in
   setTimeout(async () => {
     await loadConversations();
   }, 300);

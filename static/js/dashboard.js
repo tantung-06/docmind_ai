@@ -4,7 +4,7 @@ async function checkOllama() {
   try {
     const r = await fetch("/api/health");
     const data = await r.json();
-    document.getElementById("infModel").textContent  = data.ollama.target_model ?? "—";
+    document.getElementById("infModel").textContent  = data.ollama.target_model ?? "-";
     document.getElementById("infUrl").textContent    = "http://localhost:11434";
     document.getElementById("infStatus").innerHTML   = data.ollama.model_ready
       ? `<span style="color:#4ade80">● Sẵn sàng</span>`

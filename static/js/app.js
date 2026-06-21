@@ -1,6 +1,6 @@
 const SESSION_ID = "default";
 
-// ── Load documents ───────────────────────
+// Load documents
 
 async function loadDocuments() {
   try {
@@ -69,7 +69,7 @@ async function deleteDoc(id) {
   loadDocuments();
 }
 
-// ── File Upload ──────────────────────────
+// File Upload 
 
 function showUploadAlert(msg, type) {
   const el = document.getElementById("uploadAlert");
@@ -121,7 +121,7 @@ function initDropzone() {
   });
 }
 
-// ── Init ─────────────────────────────────
+// Init 
 document.addEventListener("DOMContentLoaded", () => {
   loadDocuments();
   initDropzone();

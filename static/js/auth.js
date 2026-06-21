@@ -1,16 +1,14 @@
-/* ── auth.js — Auth modal + navbar user UI ─────────────────────── */
-
 (function () {
   "use strict";
 
-  // ── State ────────────────────────────────────────────────────────
+  // State 
   let currentUser = null;   // { id, username, display_name } | null
 
-  // ── DOM helpers ──────────────────────────────────────────────────
+  // DOM helpers 
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
   const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
-  // ── Build HTML ───────────────────────────────────────────────────
+  // Build HTML 
   function injectModal() {
     const html = `
 <div class="auth-overlay" id="authOverlay">
@@ -112,7 +110,7 @@
     });
   }
 
-  // ── Navbar injection ─────────────────────────────────────────────
+  // Navbar injection 
   function renderNavbarAuth() {
     const targets = $$(".navbar .ms-auto, .navbar .navbar-nav + div, .navbar .d-flex.align-items-center");
     // Find the last flex container in navbar
@@ -174,7 +172,7 @@
     navFlex.appendChild(widget);
   }
 
-  // ── History notice in chat ────────────────────────────────────────
+  // History notice in chat 
   function updateHistoryNotice() {
     const inputArea = document.querySelector(".chat-input-area");
     if (!inputArea) return;
@@ -186,13 +184,13 @@
       const notice = document.createElement("div");
       notice.className = "history-notice";
       notice.innerHTML = `<i class="bi bi-info-circle"></i>
-        Bạn đang dùng chế độ khách — lịch sử sẽ không được lưu.
+        Bạn đang dùng chế độ khách - lịch sử sẽ không được lưu.
         <a onclick="AUTH.openModal()">Đăng nhập để lưu</a>`;
       inputArea.insertBefore(notice, inputArea.firstChild);
     }
   }
 
-  // ── API calls ─────────────────────────────────────────────────────
+  // API calls 
   async function checkMe() {
     try {
       const r = await fetch("/api/me");
@@ -207,7 +205,7 @@
     document.dispatchEvent(new CustomEvent("authStateChanged", { detail: currentUser }));
   }
 
-  // ── Public API ────────────────────────────────────────────────────
+  // Public API 
   window.AUTH = {
     openModal() {
       $("#authOverlay")?.classList.add("active");
@@ -289,7 +287,7 @@
     isLoggedIn() { return currentUser !== null; },
   };
 
-  // ── Helpers ───────────────────────────────────────────────────────
+  // Helpers 
   function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
   function showError(id, msg) {
@@ -314,7 +312,7 @@
     }
   }
 
-  // ── Load history into chat on login ──────────────────────────────
+  // Load history into chat on login 
   async function loadUserHistory() {
     const msgs = document.getElementById("chatMessages");
     if (!msgs) return;
@@ -374,7 +372,7 @@
       </div>`;
   }
 
-  // ── Init ──────────────────────────────────────────────────────────
+  // Init 
   document.addEventListener("DOMContentLoaded", () => {
     injectModal();
     checkMe();
