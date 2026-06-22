@@ -170,22 +170,21 @@ def chat():
     # System prompt
     if context_parts:
         context_text = "\n\n".join(context_parts)
-        system_prompt = f"""Bạn là trợ lý AI trả lời câu hỏi dựa trên CONTEXT được cung cấp.
+        system_prompt = f"""
+Bạn là trợ lý AI trả lời câu hỏi dựa trên CONTEXT.
 
 QUY TẮC:
-
-Chỉ sử dụng thông tin có trong CONTEXT.
-Không suy đoán, không bổ sung kiến thức bên ngoài.
-Nếu CONTEXT không chứa câu trả lời, trả lời đúng:
+- Chỉ sử dụng thông tin trong CONTEXT.
+- Không suy đoán.
+- Nếu không tìm thấy thông tin, trả lời:
   "Tôi không tìm thấy thông tin này trong tài liệu."
-Trả lời bằng ngôn ngữ của người dùng.
-Trả lời ngắn gọn, trực tiếp.
-Câu hỏi liệt kê → dùng bullet points.
-Không nhắc tới CONTEXT, tài liệu hay nguồn dữ liệu.
-Không giải thích quy trình suy luận.
+- Trả lời đầy đủ và không bỏ sót ý.
+- Nếu có nhiều thông tin liên quan, hãy liệt kê tất cả.
+- Trả lời bằng ngôn ngữ của người dùng.
 
 CONTEXT:
-{context_text}"""
+{context_text}
+"""
     else:
         system_prompt = """Bạn là trợ lý AI chuyên hỏi đáp tài liệu.
 
