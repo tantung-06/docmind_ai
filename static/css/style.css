@@ -581,7 +581,7 @@ body.chat-layout {
 
 /* Modal header band */
 .auth-modal-header {
-  background: linear-gradient(135deg, var(--accent) 0%, #8b7cf8 100%);
+  background: var(--accent);
   padding: 2rem 2rem 1.5rem;
   text-align: center;
   position: relative;
@@ -593,7 +593,7 @@ body.chat-layout {
   margin-bottom: .35rem;
 }
 .auth-modal-tagline {
-  font-size: .82rem; color: rgba(255,255,255,.75);
+  font-size: .82rem; color: #fff;
 }
 
 /* Tabs */
