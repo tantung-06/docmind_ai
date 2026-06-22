@@ -712,6 +712,7 @@ body.chat-layout {
   padding: .65rem; font-family: var(--font-display);
   font-size: .88rem; font-weight: 600;
   cursor: pointer; transition: all var(--transition);
+  margin-top: .5rem;
   display: flex; align-items: center; justify-content: center; gap: .5rem;
 }
 .auth-guest-btn:hover {
