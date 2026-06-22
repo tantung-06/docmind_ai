@@ -731,7 +731,7 @@ body.chat-layout {
 
 .nav-avatar {
   width: 32px; height: 32px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), #8b7cf8);
+  background: var(--accent);
   display: flex; align-items: center; justify-content: center;
   font-size: .75rem; font-weight: 700; color: #fff;
   flex-shrink: 0;
