@@ -24,9 +24,9 @@ def chat_stream(messages: list[dict]):
         "stream":  True,
         "keep_alive": "10m",
         "options": {
-            "temperature": 0.1,
-            "num_ctx": 2048,
-            "num_predict": 256
+            "temperature": 0.2,
+            "num_ctx": 4096,
+            "num_predict": 1024
             },
     }
     try:
